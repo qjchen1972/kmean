@@ -17,7 +17,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-te_path = 'data/te.npy' 
+tr_path = 'data/te.npy'
 
 class StockDataset(Dataset):
     def __init__(self, path):
@@ -36,7 +36,6 @@ class StockDataset(Dataset):
     def getinfo(self, idx):
         return self.data[idx,0,:2]    
 
-tr_path = 'data/te.npy'        
 train_dataset = StockDataset(tr_path)
 print(len(train_dataset))
 print(train_dataset.getinfo(0))
@@ -44,21 +43,24 @@ print(train_dataset[0])
 logger.info('ok')
 
 
-kconf = KmeanConfig(max_epochs=2, 
+kconf = KmeanConfig(max_epochs=10, 
                     batch_size=512, 
                     ncluster=2048, 
-                    dead_cluster=10,
-                    #last_model='cluser_%d.pt' %(3),
+                    dead_cluster=3,
+                    #last_model='cluser_%d.pt' %(43),
                     )
 
 trainer = KmeanTrainer(train_dataset, kconf)
 trainer.train()
 
 
-#cluster, epoch, loss = KmeanTrainer.load_model('model/cluser_30.pt')
-#print(cluster, epoch, loss)
-cluster = trainer.cluster
+cluster, cluster_num, epoch, loss = KmeanTrainer.load_model('model/cluser_5.pt')
+print(cluster, cluster_num, epoch, loss)
+v, m = cluster_num.sort(descending=True)
+print(v, m)
+print(cluster[m[0]], cluster[m[1]], cluster[m[2]])
+#cluster = trainer.cluster
 
-x = [[0.005, 0.03, -0.025, 0.015]]
-_, idx, loss = KmeanTrainer.data2cluster(x, cluster)
+x = [[0.032, 0.049, -0.025, 0.015]]
+idx, loss = KmeanTrainer.data2cluster(x, cluster)
 print(idx, loss, cluster[idx])

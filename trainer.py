@@ -29,8 +29,6 @@ class KmeanConfig:
         for k,v in kwargs.items():
             setattr(self, k, v)
             
-top_select = 10
-select_threahold = 1.2
     
 class KmeanTrainer:
 
